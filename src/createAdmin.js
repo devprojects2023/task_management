@@ -28,6 +28,10 @@ const createAdmin = async () => {
     
     if (existingAdmin) {
       console.log('Admin user already exists');
+      // Update username if missing
+      if (!existingAdmin.username) {
+        existingAdmin.username = 'admin';
+      }
       // Update password for existing admin
       existingAdmin.password = process.env.ADMIN_PASSWORD;
       await existingAdmin.save();

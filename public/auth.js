@@ -258,7 +258,7 @@ if (currentForm && currentPath === '/forgot-password') {
             <p>Admin credentials:</p>
             <div class="admin-credentials">
               <div><strong>Username:</strong> admin@example.com</div>
-              <div><strong>Password:</strong> Admin@2023Pass</div>
+              <!-- Password is not displayed for security reasons -->
             </div>
             <button class="auth-btn" onclick="window.location.href='/login'">Return to Login</button>
           `;

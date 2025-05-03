@@ -24,25 +24,23 @@ const createAdmin = async () => {
     await connectDB();
     
     // Check if admin user exists
-    const existingAdmin = await User.findOne({ email: 'admin@example.com' });
+    const existingAdmin = await User.findOne({ email: process.env.ADMIN_EMAIL });
     
     if (existingAdmin) {
       console.log('Admin user already exists');
-      
       // Update password for existing admin
-      existingAdmin.password = 'Admin123!';
+      existingAdmin.password = process.env.ADMIN_PASSWORD;
       await existingAdmin.save();
       console.log('Admin password updated');
     } else {
-      // Create admin user with simpler password
+      // Create admin user with password from .env
       const adminUser = new User({
-        email: 'admin@example.com',
+        email: process.env.ADMIN_EMAIL,
         username: 'admin',
-        password: 'Admin123!', // Simpler password
-        phone: '9999999999',
+        password: process.env.ADMIN_PASSWORD,
+        phone: process.env.ADMIN_PHONE,
         isAdmin: true
       });
-      
       await adminUser.save();
       console.log('Admin user created successfully');
     }
@@ -73,4 +71,4 @@ const createAdmin = async () => {
 };
 
 // Run the function
-createAdmin(); 
+createAdmin();

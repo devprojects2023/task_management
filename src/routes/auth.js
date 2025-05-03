@@ -41,14 +41,14 @@ const generateToken = (user) => {
 const createAdminUser = async () => {
   try {
     // Check if admin already exists
-    const adminExists = await User.findOne({ email: 'admin@example.com' });
+    const adminExists = await User.findOne({ email: process.env.ADMIN_EMAIL });
     
     if (!adminExists) {
       // Create admin user
       const adminUser = await User.create({
-        email: 'admin@example.com',
-        password: 'Admin@2023Pass',
-        phone: '9999999999',
+        email: process.env.ADMIN_EMAIL,
+        password: process.env.ADMIN_PASSWORD,
+        phone: process.env.ADMIN_PHONE,
         isAdmin: true
       });
       
@@ -179,7 +179,7 @@ router.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
     
     // Special handling for Admin
-    if (email.toLowerCase() === 'admin@example.com') {
+    if (email.toLowerCase() === (process.env.ADMIN_EMAIL || '').toLowerCase()) {
       return res.status(200).json({ 
         message: 'Admin account cannot be reset through this interface.',
         adminReset: true
@@ -237,7 +237,7 @@ router.post('/reset-password', async (req, res) => {
     }
     
     // Special handling for Admin - prevent password reset
-    if (user.email.toLowerCase() === 'admin@example.com') {
+    if (user.email.toLowerCase() === (process.env.ADMIN_EMAIL || '').toLowerCase()) {
       return res.status(403).json({ error: 'Admin password cannot be changed through this interface' });
     }
     

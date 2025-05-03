@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Task Management App</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <!-- Force mobile styles -->
+  <script>
+    // Force mobile styles to be applied on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      setupMobileLayout();
+    });
+    
+    // Update on resize
+    window.addEventListener('resize', function() {
+      if (window.innerWidth <= 767) {
+        setupMobileLayout();
+      } else {
+        resetToDesktopLayout();
+      }
+    });
+
+    // Function to set up mobile layout
+    function setupMobileLayout() {
+      if (window.innerWidth <= 767) {
+        // Add mobile class to body to ensure mobile styles are applied
+        document.body.classList.add('mobile-view');
+        
+        // Hide navbar brand to make space for logo
+        const navbarBrand = document.querySelector('.navbar-brand');
+        if (navbarBrand) {
+          navbarBrand.style.display = 'none';
+        }
+        
+        // 1. Center the logo and adjust navbar layout
+        const navbarContent = document.querySelector('.navbar-content');
+        if (navbarContent) {
+          navbarContent.style.display = 'flex';
+          navbarContent.style.justifyContent = 'center';
+          navbarContent.style.alignItems = 'center';
+          navbarContent.style.position = 'relative';
+          navbarContent.style.height = '60px';
+          navbarContent.style.padding = '0 15px';
+        }
+        
+        // 2. Position the logo in the center
+        const logoContainer = document.querySelector('.navbar-logo-container');
+        if (logoContainer) {
+          logoContainer.style.position = 'absolute';
+          logoContainer.style.top = '50%';
+          logoContainer.style.left = '50%';
+          logoContainer.style.transform = 'translate(-50%, -50%)';
+          logoContainer.style.margin = '0';
+          logoContainer.style.zIndex = '1';
+        }
+        
+        // 3. FORCE login/register icons to the left of the logo
+        const userProfileSection = document.querySelector('.user-profile-section');
+        if (userProfileSection) {
+          userProfileSection.style.position = 'absolute';
+          userProfileSection.style.top = '50%';
+          userProfileSection.style.left = '15px';
+          userProfileSection.style.transform = 'translateY(-50%)';
+          userProfileSection.style.display = 'flex';
+          userProfileSection.style.zIndex = '1000';
+          userProfileSection.style.marginLeft = '0';
+        }
+        
+        // 4. Make login/register buttons circular with just icons on mobile
+        const loginBtn = document.querySelector('.profile-login-btn');
+        if (loginBtn) {
+          // Only update the icon, not the anchor tag itself
+          loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i>';
+          loginBtn.setAttribute('href', '/login');
+          loginBtn.style.width = '40px';
+          loginBtn.style.height = '40px';
+          loginBtn.style.display = 'flex';
+          loginBtn.style.alignItems = 'center';
+          loginBtn.style.justifyContent = 'center';
+          loginBtn.style.borderRadius = '50%';
+          loginBtn.style.padding = '0';
+          loginBtn.style.margin = '0';
+          loginBtn.style.backgroundColor = '#0d6efd';
+          loginBtn.style.color = 'white';
+          loginBtn.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+        }
+
+        const registerBtn = document.querySelector('.profile-register-btn');
+        if (registerBtn) {
+          // Only update the icon, not the anchor tag itself
+          registerBtn.innerHTML = '<i class="fas fa-user-plus"></i>';
+          registerBtn.setAttribute('href', '/register');
+          registerBtn.style.width = '40px';
+          registerBtn.style.height = '40px';
+          registerBtn.style.display = 'flex';
+          registerBtn.style.alignItems = 'center';
+          registerBtn.style.justifyContent = 'center';
+          registerBtn.style.borderRadius = '50%';
+          registerBtn.style.padding = '0';
+          registerBtn.style.margin = '0';
+          registerBtn.style.backgroundColor = '#198754';
+          registerBtn.style.color = 'white';
+          registerBtn.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+        }
+        
+        // Make task items thinner
+        const taskItems = document.querySelectorAll('.task-item');
+        taskItems.forEach(item => {
+          item.style.padding = '4px 8px';
+          item.style.marginBottom = '4px';
+          item.style.borderLeftWidth = '2px';
+        });
+        
+        // Make add and delete buttons smaller
+        const addBtn = document.querySelector('.add-btn');
+        if (addBtn) {
+          addBtn.style.padding = '6px 10px';
+          addBtn.style.fontSize = '0.85rem';
+          addBtn.style.height = '32px';
+        }
+        
+        const deleteBtn = document.querySelector('.delete-btn');
+        if (deleteBtn) {
+          deleteBtn.style.padding = '6px 10px';
+          deleteBtn.style.fontSize = '0.85rem';
+          deleteBtn.style.height = '32px';
+        }
+        
+        // Move checkboxes more to the left
+        const selectAllContainer = document.querySelector('.select-all-container');
+        if (selectAllContainer) {
+          selectAllContainer.style.paddingLeft = '8px';
+          selectAllContainer.style.textAlign = 'left';
+        }
+        
+        const checkboxContainers = document.querySelectorAll('.task-item .checkbox-container');
+        checkboxContainers.forEach(container => {
+          container.style.marginLeft = '-4px';
+        });
+        
+        // Hide username in dropdown after login (if logged in)
+        const userName = document.querySelector('.user-profile-dropdown .user-name');
+        if (userName) {
+          userName.style.display = 'none';
+        }
+        
+        // Adjust dropdown button spacing
+        const profileDropdownBtn = document.querySelector('.profile-dropdown-btn');
+        if (profileDropdownBtn) {
+          profileDropdownBtn.style.padding = '3px 6px';
+        }
+        
+        // Remove margin from user avatar
+        const userAvatar = document.querySelector('.user-avatar');
+        if (userAvatar) {
+          userAvatar.style.marginRight = '0';
+        }
+        
+        // Force the login/register buttons to appear and position correctly
+        // Use multiple timeouts to ensure it works after other scripts might modify the DOM
+        function ensureLoginButtonsVisible() {
+          const userProfileSection = document.querySelector('.user-profile-section');
+          const guestLinks = document.querySelector('.guest-links');
+          const userDropdown = document.querySelector('.user-profile-dropdown');
+          
+          if (userProfileSection) {
+            userProfileSection.style.display = 'flex';
+            userProfileSection.style.position = 'absolute';
+            userProfileSection.style.left = '15px';
+            userProfileSection.style.zIndex = '100';
+          }
+          
+          if (guestLinks && userDropdown) {
+            const isLoggedIn = window.getComputedStyle(userDropdown).display !== 'none';
+            
+            if (!isLoggedIn) {
+              guestLinks.style.display = 'flex';
+              guestLinks.style.visibility = 'visible';
+              guestLinks.style.zIndex = '101';
+            }
+          }
+        }
+        
+        // Run multiple times to ensure it takes effect
+        ensureLoginButtonsVisible();
+        setTimeout(ensureLoginButtonsVisible, 100);
+        setTimeout(ensureLoginButtonsVisible, 500);
+        setTimeout(ensureLoginButtonsVisible, 1000);
+        
+        // Add CSS directly to forcefully position elements
+        const mobileStyle = document.createElement('style');
+        mobileStyle.id = 'mobile-login-fix';
+        mobileStyle.textContent = `
+          @media (max-width: 767px) {
+            .user-profile-section {
+              position: absolute !important;
+              left: 15px !important;
+              top: 50% !important;
+              transform: translateY(-50%) !important;
+              z-index: 100 !important;
+              display: flex !important;
+            }
+            
+            body:not(.logged-in) .guest-links {
+              display: flex !important;
+              visibility: visible !important;
+              z-index: 101 !important;
+            }
+          }
+        `;
+        
+        // Only add the style once
+        if (!document.getElementById('mobile-login-fix')) {
+          document.head.appendChild(mobileStyle);
+        }
+      }
+    }
+    
+    // Function to reset to desktop layout
+    function resetToDesktopLayout() {
+      document.body.classList.remove('mobile-view');
+      
+      // Reset positioning for desktop
+      const navbarContent = document.querySelector('.navbar-content');
+      if (navbarContent) {
+        navbarContent.style.display = '';
+        navbarContent.style.position = '';
+      }
+      
+      const logoContainer = document.querySelector('.navbar-logo-container');
+      if (logoContainer) {
+        logoContainer.style.position = '';
+        logoContainer.style.left = '';
+        logoContainer.style.transform = '';
+        logoContainer.style.zIndex = '';
+      }
+      
+      const userProfileSection = document.querySelector('.user-profile-section');
+      if (userProfileSection) {
+        userProfileSection.style.position = '';
+        userProfileSection.style.left = '';
+        userProfileSection.style.marginLeft = '';
+        userProfileSection.style.zIndex = '';
+      }
+      
+      // Restore text for login/register buttons on desktop
+      const loginBtn = document.querySelector('.profile-login-btn');
+      if (loginBtn) {
+        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+        loginBtn.setAttribute('href', '/login');
+        loginBtn.style.width = '';
+        loginBtn.style.height = '';
+        loginBtn.style.display = '';
+        loginBtn.style.alignItems = '';
+        loginBtn.style.justifyContent = '';
+        loginBtn.style.borderRadius = '';
+        loginBtn.style.padding = '';
+        loginBtn.style.marginRight = '';
+      }
+      
+      const registerBtn = document.querySelector('.profile-register-btn');
+      if (registerBtn) {
+        registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register';
+        registerBtn.setAttribute('href', '/register');
+        registerBtn.style.width = '';
+        registerBtn.style.height = '';
+        registerBtn.style.display = '';
+        registerBtn.style.alignItems = '';
+        registerBtn.style.justifyContent = '';
+        registerBtn.style.borderRadius = '';
+        registerBtn.style.padding = '';
+      }
+      
+      // Show username again on desktop if logged in
+      const userName = document.querySelector('.user-profile-dropdown .user-name');
+      if (userName) {
+        userName.style.display = 'block';
+      }
+    }
+    
+    // Add a mutation observer to detect when user profile dropdown becomes visible
+    document.addEventListener('DOMContentLoaded', function() {
+      // Create a MutationObserver to monitor the user profile dropdown's style changes
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.attributeName === 'style') {
+            const userDropdown = document.querySelector('.user-profile-dropdown');
+            const guestLinks = document.querySelector('.guest-links');
+            
+            if (userDropdown && guestLinks) {
+              const dropdownStyle = window.getComputedStyle(userDropdown);
+              if (dropdownStyle.display !== 'none') {
+                guestLinks.style.display = 'none';
+              }
+            }
+          }
+        });
+      });
+      
+      // Start observing the user profile dropdown for style changes
+      const userDropdown = document.querySelector('.user-profile-dropdown');
+      if (userDropdown) {
+        observer.observe(userDropdown, { attributes: true, attributeFilter: ['style'] });
+      }
+    });
+  </script>
+  
+  <!-- Additional direct CSS to ensure login/register icons are left of logo -->
+  <style>
+    /* Direct CSS to force login/register icons on the left */
+    @media (max-width: 767px) {
+      .user-profile-section {
+        position: absolute !important;
+        top: 50% !important;
+        left: 15px !important;
+        transform: translateY(-50%) !important;
+        display: flex !important;
+        z-index: 1000 !important;
+      }
+      
+      .guest-links {
+        display: flex !important;
+        z-index: 1001 !important;
+      }
+      
+      .profile-login-btn,
+      .profile-register-btn {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      
+      .profile-login-btn {
+        background-color: #0d6efd !important;
+      }
+      
+      .profile-register-btn {
+        background-color: #198754 !important;
+      }
+      
+      /* Override any conflicting styles */
+      .navbar-content {
+        overflow: visible !important;
+      }
+      
+      /* Center the logo properly */
+      .navbar-logo-container {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0 !important;
+        z-index: 1 !important;
+      }
+      
+      /* Hide any text for buttons, show only icons */
+      .profile-login-btn span,
+      .profile-register-btn span {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toast-container" id="toast-container"></div>
+  
+  <!-- Top Navigation Bar -->
+  <nav class="main-navbar">
+    <div class="navbar-content">
+      <div class="navbar-logo-container">
+        <img src="/logo.png" alt="Company Logo" class="navbar-logo" id="navbar-logo">
+      </div>
+      
+      <div class="navbar-brand">
+        <span>Task Management</span>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="page-container">
+    <!-- Header with welcome text placed at the top -->
+    <header>
+      <div class="welcome-box">
+        <h1 class="title-3d" data-text="Task Management App">Task Management App</h1>
+      </div>
+    </header>
+    
+    <!-- Login status bar will be inserted here by JavaScript -->
+    
+    <div class="content-wrapper">
+      <div class="main-content">
+        <!-- Image and tagline -->
+        <img src="https://img.freepik.com/free-vector/business-team-brainstorm-idea-lightbulb-from-jigsaw-working-team-collaboration-enterprise-cooperation-colleagues-mutual-assistance-concept-pinkish-coral-bluevector-isolated-illustration_335657-1651.jpg" alt="Task Management" class="devops-image">
+        <p class="tagline"><span class="highlight-blue">Daily tasks</span> <span class="highlight-green">need proper</span> <span class="highlight-orange">organization</span> <span class="highlight-purple">for maximum</span> <span class="highlight-red">productivity</span> <span class="highlight-teal">and efficiency</span></p>
+        
+        <!-- Task container section -->
+        <div class="task-container-section">
+          <h2 class="section-title">Your Tasks</h2>
+          
+          <!-- Task controls -->
+          <div class="controls">
+            <div class="task-box">
+              <input type="text" id="task" placeholder="Add a new task..." />
+              <button onclick="addTask()" class="add-btn"><i class="fas fa-plus"></i> Add</button>
+              <button onclick="deleteSelectedTasks()" class="delete-btn" style="background-color: #dc3545; color: white;"><i class="fas fa-trash"></i> Delete Selected</button>
+            </div>
+          </div>
+
+          <!-- Select All checkbox without text -->
+          <div class="select-all-container">
+            <label class="select-all-label">
+              <input type="checkbox" id="select-all" onclick="toggleSelectAll()">
+            </label>
+          </div>
+
+          <!-- Tasks container -->
+          <div id="tasks" class="tasks-container"></div>
+          
+          <!-- Pagination -->
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </div>
+      
+      <!-- Sidebar for YouTube videos -->
+      <div class="sidebar">
+        <!-- Move login, registration, and user details here -->
+        <div class="sidebar-auth-section" id="sidebar-auth-section">
+          <!-- Guest links (shown by default, hidden if logged in) -->
+          <div class="guest-links">
+            <a href="/login" class="profile-login-btn">
+              <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+            <a href="/register" class="profile-register-btn">
+              <i class="fas fa-user-plus"></i> Register
+            </a>
+          </div>
+          <!-- User info (hidden by default, shown when logged in) -->
+          <div class="user-profile-dropdown" style="display: none;">
+            <button class="profile-dropdown-btn" onclick="toggleProfileMenu()">
+              <div class="user-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <span class="user-name">User Name</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="profile-dropdown-menu" id="profileMenu">
+              <div class="profile-header">
+                <strong class="user-full-name">User Name</strong>
+                <span class="user-email">user@example.com</span>
+              </div>
+              <a href="/profile" class="dropdown-item">
+                <i class="fas fa-user-circle"></i> My Profile
+              </a>
+              <a href="/settings" class="dropdown-item">
+                <i class="fas fa-cog"></i> Settings
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" onclick="logout()" class="dropdown-item">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-header">
+          <a href="https://www.youtube.com/@onestoptech21" target="_blank">
+            <img src="/onestoptech-logo.png" alt="OneStopTech Logo" class="onestoptech-logo">
+          </a>
+        </div>
+        <div class="video-container">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/4n27XwXW_-Y?list=PL7wT5nUnaTbCUUM_3ManpcmivuknuN-cU&autoplay=1&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <div class="video-container">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/EIpg2dNBgLg?list=PL7wT5nUnaTbAqsmSb7OrIaVLVkxmggdz5&autoplay=1&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <div class="video-container">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/SlOYTNHRWI4?list=PL7wT5nUnaTbCis_wMMr1gZaK0JGgIRgzD&autoplay=1&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <div class="video-container">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/fbSyDHRa0Rg?autoplay=1&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <div class="video-container">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/zitkyQCDL-o?autoplay=1&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <span><i class="fas fa-mobile-alt"></i> +919732457565</span>
+      <span><i class="fas fa-envelope"></i> debabrata.devops@gmail.com</span>
+      <span><i class="fas fa-globe"></i> <a href="https://onestoptech.co.in" target="_blank">onestoptech.co.in</a></span>
+      <span><i class="fas fa-user"></i> <a href="https://debabrata.onestoptech.co.in" target="_blank">Portfolio</a></span>
+      <span class="copyright">&copy; 2025 Debabrata Hazra. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="/app.js" defer></script>
+</body>
+</html>
+

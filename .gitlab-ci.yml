@@ -1,0 +1,45 @@
+stages:
+  - build
+  - push
+  - deploy
+
+variables:
+  GIT_STRATEGY: fetch
+
+before_script:
+  - echo "Cloning the repository and checking Docker version..."
+  - bash beforescript.sh
+
+build:
+  stage: build
+  tags:
+    - centos
+  script:
+    - echo "Building the Docker image..."
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
+
+push:
+  stage: push
+  tags:
+    - centos
+  script:
+    - echo "Logging into Docker Hub..."
+    - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $DOCKER_HUB_USERNAME/tasks:$CI_COMMIT_SHORT_SHA
+    - docker push $DOCKER_HUB_USERNAME/tasks:$CI_COMMIT_SHORT_SHA
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  tags:
+    - centos
+  script:
+    - echo "Deploying with Docker Compose..."
+    - docker-compose -f docker-compose-local.yml down || true
+    - docker-compose -f docker-compose-local.yml up  -d
+  after_script:
+    - bash afterscript.sh
+  only:
+    - main
+

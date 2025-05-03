@@ -1,0 +1,17 @@
+
+services:
+  web:
+    image: $DOCKER_HUB_USERNAME/tasks:$CI_COMMIT_SHORT_SHA
+    container_name: tasks-NodeJS
+
+    restart: always
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    networks:
+      - devops-network  # Using an external network
+
+networks:
+  devops-network:
+    external: true
